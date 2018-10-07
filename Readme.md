@@ -16,7 +16,14 @@ I *liked* the orange, for a few reasons:
 [The Icon Journey](https://code.visualstudio.com/blogs/2017/10/24/theicon) <= The reversion to blue
 
 # Installation
-1.	Place the icons and the Powershell script in a folder together
+**Required files**    
+*	CodeOrange.ps1
+*	code_70x70.png
+*	code_150x150.png
+*	code_file.ico
+
+**Steps**    
+1.	Clone or download the repository. Keep the icons and the Powershell script in a folder together
 2.	Run the Powershell script
 
 The script does the following
