@@ -15,6 +15,8 @@ I *liked* the orange, for a few reasons:
 
 [The Icon Journey](https://code.visualstudio.com/blogs/2017/10/24/theicon) <= The reversion to blue
 
+[My blog post about Code Orange](https://www.softwaremeadows.com/posts/tidbits_vs_code-_orange_icon_resurrection/)
+
 # Installation
 **Required files**    
 *	CodeOrange.ps1
