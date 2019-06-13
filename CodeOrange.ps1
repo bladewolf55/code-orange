@@ -1,5 +1,9 @@
 # In Powershell, all function definitions must be at the top in order to be loaded into memory before running the main script.
 
+Write-Output "Run As Administrator"
+# https://stackoverflow.com/a/31602095/1628707
+if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
+
 
 # http://community.idera.com/powershell/powertips/b/tips/posts/refreshing-icon-cache
 function Update-ExplorerIcon {
@@ -55,18 +59,29 @@ If (-Not (Test-Path $basePath))
 
 Write-Output ""
 Write-Output "Starting"
-Write-Output "VS Code Path: $basePath"
 
-Write-Output "Copying orange icons"
+$sourcePath = $PSScriptRoot
+if (!$sourcePath) {
+    $sourcePath = $psISE.CurrentFile.FullPath
+}
+Write-Output "Copying orange icons from "
+Write-Output "$sourcePath"
+Write-Output "to"
+Write-Output "$basePath"
+
 $iconFile = Join-Path $basePath  "code_file.ico"
-Copy-Item -Path @(Join-Path $PSScriptRoot *) -Include *.png,*.ico -Destination $basePath
+# Get path if debugging in ISE
+
+
+Copy-Item -Path @(Join-Path $sourcePath *) -Include *.png,*.ico -Destination $basePath
 
 Write-Output "Setting Registry..."
 New-PSDrive -PSProvider registry -Root HKEY_CLASSES_ROOT -Name HKCR
 Set-ItemProperty -LiteralPath "HKCR:\*\shell\VSCode" -Name Icon -Value $iconFile
 Set-ItemProperty -Path HKCR:\Directory\Background\shell\VSCode -Name Icon -Value $iconFile
 Set-ItemProperty -Path HKCR:\Drive\shell\VSCode -Name Icon -Value $iconFile
-Set-ItemProperty -Path HKCU:\Software\Classes\Directory\shell\VSCode -Name Icon -Value $iconFile
+# Key isn't being set on default installation anymore?
+# Set-ItemProperty -Path HKCU:\Software\Classes\Directory\shell\VSCode -Name Icon -Value $iconFile
 Remove-PSDrive -Name HKCR 
 
 $shortcut = Read-Host "Create a shortcut? (y/N)"
