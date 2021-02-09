@@ -1,3 +1,5 @@
+# https://devblogs.microsoft.com/scripting/use-the-powershell-registry-provider-to-simplify-registry-access/
+
 # In Powershell, all function definitions must be at the top in order to be loaded into memory before running the main script.
 
 Write-Output "Run As Administrator"
