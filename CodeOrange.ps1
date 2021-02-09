@@ -47,6 +47,7 @@ public static void Refresh()  {
 # https://www.softwaremeadows.com
 # MIT License
 
+$currentFolder = Get-Location 
 
 # This is the new "standard" path
 $basePath = "$env:LOCALAPPDATA\Programs\Microsoft VS Code\resources\app\resources\win32\"
@@ -80,9 +81,13 @@ New-PSDrive -PSProvider registry -Root HKEY_CLASSES_ROOT -Name HKCR
 Set-ItemProperty -LiteralPath "HKCR:\*\shell\VSCode" -Name Icon -Value $iconFile
 Set-ItemProperty -Path HKCR:\Directory\Background\shell\VSCode -Name Icon -Value $iconFile
 Set-ItemProperty -Path HKCR:\Drive\shell\VSCode -Name Icon -Value $iconFile
-# Key isn't being set on default installation anymore?
-# Set-ItemProperty -Path HKCU:\Software\Classes\Directory\shell\VSCode -Name Icon -Value $iconFile
 Remove-PSDrive -Name HKCR 
+Set-Location HKLM:
+Set-ItemProperty -Path HKLM:\SOFTWARE\Classes\Directory\shell\VSCode  -Name Icon -Value $iconFile
+# Not used
+# Set-Location HKCU:
+# Set-ItemProperty -Path HKCU:\Software\Classes\Directory\shell\VSCode -Name Icon -Value $iconFile
+
 
 $shortcut = Read-Host "Create a shortcut? (y/N)"
 if ($shortcut -eq 'y' -or $shortcut -eq 'Y')
@@ -100,6 +105,6 @@ if ($shortcut -eq 'y' -or $shortcut -eq 'Y')
 # refresh icon cache
 Write-Output("Attempting to refresh icon cache")
 Update-ExplorerIcon
-
+Set-Location $currentFolder
 Write-Output "Finished. Press <Enter> to exit."
 Pause
