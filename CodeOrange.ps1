@@ -49,6 +49,7 @@ public static void Refresh()  {
 # https://www.softwaremeadows.com
 # MIT License
 
+$ErrorActionPreference = "Stop"
 $currentFolder = Get-Location 
 
 # This is the new "standard" path
@@ -73,6 +74,7 @@ Write-Output "to"
 Write-Output "$basePath"
 
 $iconFile = Join-Path $basePath  "code_file.ico"
+Write-Output "iconFile $iconFile"
 # Get path if debugging in ISE
 
 
@@ -80,19 +82,27 @@ Copy-Item -Path @(Join-Path $sourcePath *) -Include *.png,*.ico -Destination $ba
 
 Write-Output "Setting Registry..."
 New-PSDrive -PSProvider registry -Root HKEY_CLASSES_ROOT -Name HKCR
+Set-Location HKCR:
+try {  New-Item -Path "HKCR:\*\shell\VSCode"} catch {}
+try {  New-Item -Path "HKCR:\Directory\Background\shell\VSCode"} catch {}
+try {  New-Item -Path "HKCR:\Drive\shell\VSCode"} catch {}
+
 Set-ItemProperty -LiteralPath "HKCR:\*\shell\VSCode" -Name Icon -Value $iconFile
 Set-ItemProperty -Path HKCR:\Directory\Background\shell\VSCode -Name Icon -Value $iconFile
 Set-ItemProperty -Path HKCR:\Drive\shell\VSCode -Name Icon -Value $iconFile
-Remove-PSDrive -Name HKCR 
 Set-Location HKLM:
+try {  New-Item -Path "HKLM:\SOFTWARE\Classes\Directory\shell\VSCode"} catch {}
 Set-ItemProperty -Path HKLM:\SOFTWARE\Classes\Directory\shell\VSCode  -Name Icon -Value $iconFile
 # Not used
 # Set-Location HKCU:
 # Set-ItemProperty -Path HKCU:\Software\Classes\Directory\shell\VSCode -Name Icon -Value $iconFile
 
+Set-Location C:
+Remove-PSDrive -Name HKCR 
+
 
 $shortcut = Read-Host "Create a shortcut? (y/N)"
-if ($shortcut -eq 'y' -or $shortcut -eq 'Y')
+if ($shortcut -eq 'y')
 {
     Write-Output "Creating shortcut in Desktop"
     $TargetFile = $basePath + "..\..\..\..\code.exe"
